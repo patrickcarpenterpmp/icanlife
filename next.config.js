@@ -1,12 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   eslint: {
-    ignoreDuringBuilds: true,
-  },
-  images: {
-    domains: ['images.unsplash.com'],
+    ignoreDuringBuilds: true, // Disable ESLint during build
   },
 }
 

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I FISH LIFE - Log Catches, Share Reels, Earn Badges</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+  :root { --primary: linear-gradient(to right, #0066cc, #00ccff); --bg: #0a0a0a; --card: #1a1a1a; --text: #fff; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Montserrat',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+  header { background:var(--primary); padding:2rem 1rem; text-align:center; }
+  h1 { font-family:'Oswald',sans-serif; font-size:3.5rem; text-transform:uppercase; letter-spacing:4px; margin:0; }
+  .nav { display:flex; justify-content:center; gap:1.5rem; margin:1.5rem 0; flex-wrap:wrap; }
+  .nav a { color:#fff; text-decoration:none; padding:0.8rem 1.8rem; border:2px solid #fff; border-radius:30px; font-weight:600; transition:all 0.3s; }
+  .nav a:hover, .nav a.active { background:#fff; color:#0066cc; transform:scale(1.08); }
+  section { padding:2rem; max-width:1400px; margin:0 auto; }
+  .timeline { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:1.5rem; }
+  .post { background:var(--card); border-radius:16px; padding:1.5rem; box-shadow:0 8px 30px rgba(0,102,204,0.4); }
+  .reel { height:300px; background:var(--primary); border-radius:12px; margin:1rem 0; position:relative; overflow:hidden; cursor:pointer; }
+  .reel::after { content:'Tap for Reel ▶'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#fff; font-size:1.5rem; }
+  .log-form { background:var(--card); padding:2rem; border-radius:16px; max-width:700px; margin:2rem auto; }
+  input, select, textarea { width:100%; padding:1rem; margin:0.8rem 0; border-radius:8px; border:none; background:#333; color:#fff; }
+  button { background:var(--primary); color:#fff; padding:1rem 2rem; border:none; border-radius:50px; font-size:1.2rem; cursor:pointer; margin-top:1rem; }
+  .badges { display:flex; flex-wrap:wrap; gap:0.8rem; margin:1rem 0; }
+  .badge { background:var(--primary); padding:0.5rem 1.2rem; border-radius:30px; font-weight:bold; animation:pulse 2s infinite; }
+  @keyframes pulse { 0% { transform:scale(1); } 50% { transform:scale(1.1); } 100% { transform:scale(1); } }
+  .map { height:400px; border-radius:16px; margin:2rem 0; }
+  @media(max-width:768px) { h1 { font-size:2.5rem; } .nav { flex-direction:column; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>I FISH LIFE</h1>
+  <nav class="nav">
+    <a href="#timeline" class="active">Timeline</a>
+    <a href="#reels">Reels</a>
+    <a href="#log">Log Catch</a>
+    <a href="#profile">Profile</a>
+    <a href="#leaderboard">Leaderboard</a>
+  </nav>
+</header>
+
+<section id="timeline">
+  <h2 style="text-align:center; font-size:2.5rem; margin:2rem 0;">Latest Catches</h2>
+  <div class="timeline">
+    <div class="post">
+      <h3>@JohnTheAngler</h3>
+      <p>5.2 lb largemouth on topwater • Lake Tahoe • 68°F</p>
+      <div class="reel"></div>
+      <p>Likes: 156 ❤️ | +50 points</p>
+    </div>
+    <div class="post">
+      <h3>@SarahReels</h3>
+      <p>3 rainbow trout on fly • 5wt rod • Who's next?</p>
+      <div class="reel"></div>
+      <p>Likes: 89 | Badge: Fly Master</p>
+    </div>
+    <div class="post">
+      <h3>@ProHunter</h3>
+      <p>Redfish + Snook slam • Incoming tide</p>
+      <div class="reel"></div>
+      <p>Likes: 204</p>
+    </div>
+  </div>
+</section>
+
+<section id="reels" style="display:none;">
+  <h2 style="text-align:center; font-size:2.5rem; margin:2rem 0;">Suggested Reels</h2>
+  <div style="display:flex; overflow-x:auto; gap:1rem; padding:1rem;">
+    <div class="reel" onclick="alert('Swiped!')"></div>
+    <div class="reel" onclick="alert('Swiped!')"></div>
+    <div class="reel" onclick="alert('Swiped!')"></div>
+  </div>
+</section>
+
+<section id="log" style="display:none;">
+  <h2 style="text-align:center; font-size:2.5rem; margin:2rem 0;">Log Your Catch</h2>
+  <div class="log-form">
+    <input type="text" placeholder="Session Title" required>
+    <input type="text" placeholder="Location / Spot" required>
+    <select required><option>Select Species</option><option>Bass</option><option>Trout</option><option>Salmon</option></select>
+    <input type="number" placeholder="Weight (lbs)" step="0.1">
+    <input type="text" placeholder="Lure / Bait">
+    <textarea placeholder="Story & Conditions..." rows="4"></textarea>
+    <input type="file" multiple accept="image/*,video/*">
+    <div class="map" id="map"></div>
+    <button type="submit">Log Catch & Earn 25 Points 🎣</button>
+  </div>
+</section>
+
+<section id="profile" style="display:none;">
+  <h2 style="text-align:center; font-size:2.5rem; margin:2rem 0;">Your Profile</h2>
+  <div class="log-form">
+    <h3>@YourUsername</h3>
+    <p>Total Catches: 42 | Points: 1,250 | Streak: 7 days</p>
+    <div class="badges">
+      <div class="badge">First Catch 🐟</div>
+      <div class="badge">5lb Club 🏆</div>
+      <div class="badge">Dawn Patrol 🌅</div>
+    </div>
+  </div>
+</section>
+
+<section id="leaderboard" style="display:none;">
+  <h2 style="text-align:center; font-size:2.5rem; margin:2rem 0;">Local Leaderboard</h2>
+  <div class="log-form">
+    <ol style="font-size:1.3rem;">
+      <li>@JohnTheAngler — 2,500 pts</li>
+      <li>@You — 1,250 pts</li>
+      <li>@SarahReels — 980 pts</li>
+    </ol>
+  </div>
+</section>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  // Simple tab switching
+  document.querySelectorAll('.nav a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+      const id = a.getAttribute('href').substring(1);
+      document.getElementById(id).style.display = 'block';
+      document.querySelector('.nav a.active').classList.remove('active');
+      a.classList.add('active');
+    });
+  });
+
+  // map
+  const map = L.map('map').setView([37.7749, -122.4194], 10);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  L.marker([37.7749, -122.4194]).addTo(map).bindPopup('Your Spot').openPopup();
+</script>
+</body>
+</html>

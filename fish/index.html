@@ -1,158 +1,36 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>I FISH LIFE</title>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
-  :root {
-    --bg: #000000;
-    --card: #0d1117;
-    --accent: #00f5ff;
-    --accent-dark: #00b4d8;
-    --text: #e6edf3;
-    --text-muted: #8b949e;
-  }
+  :root { --bg: #000; --card: rgba(13,17,23,0.8); --accent: #00ccff; --accent-glow: 0 0 20px #00ccff; }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { 
-    font-family: 'Inter', sans-serif; 
-    background: var(--bg); 
-    color: var(--text); 
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-  header {
-    background: linear-gradient(to bottom, #001d3d, transparent);
-    padding: 2rem 1rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=2000&q=80') center/cover no-repeat;
-    opacity: 0.2;
-    z-index: -1;
-  }
-  h1 {
-    font-family: 'Oswald', sans-serif;
-    font-size: clamp(3rem, 10vw, 7rem);
-    font-weight: 700;
-    letter-spacing: 8px;
-    background: linear-gradient(to right, #00f5ff, #00ccff, #0099cc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 40px rgba(0,245,255,0.5);
-  }
-  .nav {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin: 2rem 0;
-    flex-wrap: wrap;
-  }
-  .nav a {
-    color: var(--text);
-    text-decoration: none;
-    font-weight: 600;
-    padding: 0.8rem 2rem;
-    border: 2px solid transparent;
-    border-radius: 50px;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(10px);
-    transition: all 0.4s ease;
-  }
-  .nav a:hover, .nav a.active {
-    border-color: var(--accent);
-    background: rgba(0,245,255,0.1);
-    box-shadow: 0 0 30px rgba(0,245,255,0.3);
-    transform: translateY(-4px);
-  }
-  section { padding: 3rem 1rem; max-width: 1400px; margin: 0 auto; }
-  .timeline { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); 
-    gap: 2rem; 
-  }
-  .post {
-    background: var(--card);
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    transition: all 0.4s ease;
-  }
-  .post:hover { transform: translateY(-12px); box-shadow: 0 20px 50px rgba(0,245,255,0.2); }
-  .post-header { padding: 1.5rem; }
-  .post-user { font-weight: 700; color: var(--accent); font-size: 1.1rem; }
-  .post-img { width: 100%; height: 300px; object-fit: cover; }
-  .post-stats { padding: 1rem 1.5rem; display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-muted); }
-  .reels {
-    display: flex;
-    overflow-x: auto;
-    gap: 1rem;
-    padding: 1rem 0;
-    scroll-snap-type: x mandatory;
-  }
-  .reel {
-    flex: 0 0 80%;
-    height: 85vh;
-    background: linear-gradient(to bottom, #001d3d, #000);
-    border-radius: 24px;
-    overflow: hidden;
-    position: relative;
-    scroll-snap-align: center;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-  }
-  .log-form {
-    background: var(--card);
-    padding: 2.5rem;
-    border-radius: 24px;
-    max-width: 600px;
-    margin: 3rem auto;
-    box-shadow: 0 20px 60px rgba(0,245,255,0.4);
-  }
-  input, select, textarea {
-    width: 100%;
-    padding: 1rem;
-    margin: 1rem 0;
-    background: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 12px;
-    color: white;
-    font-size: 1.1rem;
-  }
-  button {
-    background: var(--accent);
-    color: black;
-    font-weight: 700;
-    padding: 1.2rem 3rem;
-    border: none;
-    border-radius: 50px;
-    font-size: 1.3rem;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 1rem;
-    box-shadow: 0 10px 30px rgba(0,245,255,0.4);
-    transition: all 0.3s;
-  }
-  button:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,245,255,0.6); }
-  .badge {
-    background: var(--accent);
-    color: black;
-    padding: 0.6rem 1.4rem;
-    border-radius: 50px;
-    font-weight: 700;
-    display: inline-block;
-    margin: 0.5rem;
-    animation: glow 3s infinite;
-  }
-  @keyframes glow { 0%,100% { box-shadow: 0 0 20px var(--accent); } 50% { box-shadow: 0 0 40px var(--accent); } }
-  .map { height: 400px; border-radius: 20px; margin: 2rem 0; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+  body { font-family:'Montserrat',sans-serif; background:var(--bg); color:white; }
+  .glass { background:var(--card); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.1); }
+  .glow { box-shadow:var(--accent-glow); }
+  header { background:linear-gradient(to bottom, #001d3d, transparent); padding:2rem 1rem; text-align:center; position:relative; overflow:hidden; }
+  header::before { content:''; position:absolute; inset:0; background:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=2000&q=80') center/cover; opacity:0.2; z-index:-1; }
+  h1 { font-family:'Oswald',sans-serif; font-size:clamp(3rem,10vw,7rem); font-weight:700; letter-spacing:8px; background:linear-gradient(to right, #00ccff, white); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-shadow:0 0 40px rgba(0,204,255,0.5); }
+  .nav { display:flex; justify-content:center; gap:2rem; margin:2rem 0; flex-wrap:wrap; }
+  .nav a { color:white; text-decoration:none; padding:0.8rem 2rem; border:2px solid transparent; border-radius:50px; background:rgba(255,255,255,0.05); backdrop-filter:blur(10px); transition:all 0.4s ease; }
+  .nav a:hover, .nav a.active { border-color:#00ccff; background:rgba(0,204,255,0.1); box-shadow:0 0 30px rgba(0,204,255,0.3); transform:translateY(-4px); }
+  section { padding:3rem 1rem; max-width:1400px; margin:0 auto; }
+  .timeline { display:grid; grid-template-columns:repeat(auto-fill,minmax(380px,1fr)); gap:2rem; }
+  .post { background:var(--card); border-radius:20px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.6); transition:all 0.4s ease; }
+  .post:hover { transform:translateY(-12px); box-shadow:0 20px 50px rgba(0,204,255,0.2); }
+  .reel { height:80vh; background:linear-gradient(to bottom, #001d3d, #000); border-radius:24px; overflow:hidden; position:relative; cursor:pointer; scroll-snap-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.8); }
+  .log-form { background:var(--card); padding:2.5rem; border-radius:24px; max-width:600px; margin:3rem auto; box-shadow:0 20px 60px rgba(0,204,255,0.4); }
+  input, select, textarea { width:100%; padding:1rem; margin:1rem 0; border-radius:12px; border:1px solid rgba(255,255,255,0.1); background:rgba(13,17,23,0.8); color:white; }
+  button { background:#00ccff; color:black; font-weight:700; padding:1.2rem 3rem; border:none; border-radius:50px; font-size:1.3rem; cursor:pointer; width:100%; margin-top:1rem; box-shadow:0 10px 30px rgba(0,204,255,0.4); transition:all 0.3s; }
+  button:hover { transform:translateY(-4px); box-shadow:0 20px 40px rgba(0,204,255,0.6); }
+  .badge { background:#00ccff; color:black; padding:0.6rem 1.4rem; border-radius:50px; font-weight:bold; display:inline-block; margin:0.5rem; animation:glow 3s infinite; }
+  @keyframes glow { 0%,100% { box-shadow:0 0 20px #00ccff; } 50% { box-shadow:0 0 40px #00ccff; } }
+  .map { height:400px; border-radius:20px; margin:2rem 0; overflow:hidden; box-shadow:0 10px 40px rgba(0,0,0,0.5); }
 </style>
 </head>
 <body>
@@ -168,69 +46,50 @@
   </nav>
 </header>
 
-<!-- Timeline -->
 <section id="timeline">
-  <h2 class="text-4xl font-bold text-center mb-12">Latest Catches</h2>
+  <h2 class="text-4xl font-bold text-center mb-12" style="color:#00ccff;">Live Feed</h2>
   <div class="timeline">
     <div class="post">
-      <div class="post-header">
-        <div class="post-user">@JohnTheAngler</div>
-        <p class="text-lg mt-2">5.2 lb largemouth • topwater popper • 68°F • Lake Tahoe</p>
+      <div style="padding:1.5rem;">
+        <div class="post-user" style="font-weight:700;color:#00ccff;font-size:1.1rem;">@JohnTheAngler</div>
+        <p style="margin:1rem 0;">5.2lb largemouth on topwater • Lake Tahoe • 68°F</p>
       </div>
-      <img src="https://images.unsplash.com/photo-1622383523783-9f0b7414d5c8?w=800" alt="bass" class="post-img">
-      <div class="post-stats">
-        <span>156 ❤️</span>
-        <span>+50 pts</span>
+      <img src="https://images.unsplash.com/photo-1622383523783-9f0b7414d5c8?w=800" alt="bass" style="width:100%;height:300px;object-fit:cover;">
+      <div style="padding:1rem 1.5rem;display:flex;justify-content:space-between;font-size:0.9rem;color:#8b949e;">
+        <span>Likes: 156 | Comments: 23</span>
+        <span style="color:#00ccff;font-weight:bold;">+50 pts</span>
       </div>
     </div>
-    <!-- Add more posts — same structure -->
+    <!-- Duplicate for more posts -->
   </div>
 </section>
 
-<!-- Reels -->
-<section id="reels" style="display:none;">
-  <h2 class="text-4xl font-bold text-center mb-12">Reels That Slap</h2>
-  <div class="reels">
-    <div class="reel"></div>
-    <div class="reel"></div>
-    <div class="reel"></div>
-  </div>
-</section>
-
-<!-- Log Form -->
-<section id="log" style="display:none;">
-  <h2 class="text-4xl font-bold text-center mb-12">Log Your Next Monster</h2>
-  <div class="log-form">
-    <input type="text" placeholder="Session Title (e.g., PB Striper)" required>
-    <input type="text" placeholder="Location" required>
-    <select required><option>Select Species</option><option>Largemouth</option><option>Striper</option><option>Trout</option></select>
-    <input type="number" placeholder="Weight (lbs)" step="0.1">
-    <textarea placeholder="The story, the fight, the vibes..." rows="5"></textarea>
-    <input type="file" multiple accept="image/*,video/*">
-    <div class="map" id="map"></div>
-    <button onclick="confetti({particleCount:100,spread:70,origin:{y:0.6}})">LOG CATCH — EARN 50 PTS</button>
-  </div>
-</section>
-
-<!-- Add Profile & Leaderboard sections the same way — I’ll send them next if you want -->
+<!-- Add the rest of the sections (reels, log, profile, leaderboard) from my previous message -->
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  // Tab system
+  // Nav tabs
   document.querySelectorAll('.nav a').forEach(a => {
     a.addEventListener('click', e => {
       e.preventDefault();
       document.querySelectorAll('section').forEach(s => s.style.display = 'none');
-      const id = a.getAttribute('href').substring(1);
-      document.getElementById(id).style.display = 'block';
+      document.getElementById(a.href.substring(a.href.indexOf('#') + 1)).style.display = 'block';
       document.querySelector('.nav a.active').classList.remove('active');
       a.classList.add('active');
     });
   });
 
   // Map
-  const map = L.map('map').setView([39.0, -120.0], 6);
+  const map = L.map('map').setView([37.7749, -122.4194], 13);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  L.marker([37.7749, -122.4194]).addTo(map).bindPopup('Your Spot');
+
+  // Confetti on log
+  document.querySelector('button[type="submit"]').addEventListener('click', e => {
+    e.preventDefault();
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    alert('Logged! +25 pts 🎉');
+  });
 </script>
 </body>
 </html>
